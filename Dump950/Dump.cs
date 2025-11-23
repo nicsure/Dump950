@@ -72,13 +72,22 @@ namespace Dump950
                     }
                     if (sig != 0xaa) 
                         continue;
-                    if (GetByte() != 0x30) 
+                    if (GetByte() != 0x30)
+                    {
+                        Console.WriteLine($"Command Error");
                         continue;
+                    }
                     int addr = GetByte() | (GetByte() << 8) | (GetByte() << 16) | (GetByte() << 24);
-                    if (addr < 0 || addr > (FLASH_SIZE - 1) * 1024) 
+                    if (addr < 0 || addr > (FLASH_SIZE - 1) * 1024)
+                    {
+                        Console.WriteLine($"Address Error: {addr}");
                         continue;
-                    if ((addr & 0x3ff) != 0) 
+                    }
+                    if ((addr & 0x3ff) != 0)
+                    {
+                        Console.WriteLine($"Address Sync Error: {addr}");
                         continue;
+                    }
                     int block = addr / 1024;
                     byte cs1 = 0;
                     for (int i = 0; i < 1024; i++)
@@ -86,8 +95,11 @@ namespace Dump950
                         dump[addr + i] = (byte)GetByte();
                         cs1 += dump[addr + i];
                     }
-                    if (cs1 != GetByte()) 
+                    if (cs1 != GetByte())
+                    {
+                        Console.WriteLine($"Checksum Error: {addr}");
                         continue;
+                    }
                     if (!blocks[block])
                     {
                         blockCount++;
@@ -105,6 +117,7 @@ namespace Dump950
                         {
                             Console.WriteLine("Unable to write 'dump.bin', file system error");
                         }
+                        Console.Write("\r\nPress 'Enter' to quit. ");
                         Console.ReadLine();
                         return;
                     }
