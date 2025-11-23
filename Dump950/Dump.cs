@@ -96,8 +96,15 @@ namespace Dump950
                     blocks[block] = true;
                     if(blockCount >= blocks.Length)
                     {
-                        Console.WriteLine("Dump Finished: 'dump.bin' created.");
-                        File.WriteAllBytes("dump.bin", dump);
+                        try
+                        {
+                            File.WriteAllBytes("dump.bin", dump);
+                            Console.WriteLine("Dump Finished: 'dump.bin' created.");
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Unable to write 'dump.bin', file system error");
+                        }
                         return;
                     }
                 }
