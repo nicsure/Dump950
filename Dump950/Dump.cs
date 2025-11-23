@@ -31,32 +31,30 @@ namespace Dump950
             Console.WriteLine("RT-950 SPI Flash Storage Dump\r\n");
             Console.WriteLine("Available Serial Ports");
             for (int i = 0; i < ports.Length; i++)
-                Console.WriteLine(ports[i]);
+                Console.WriteLine($"{i}. {ports[i]}");
             while (true)
             {
-                Console.Write("Enter Selection or Q to Quit : ");
+                Console.Write($"Enter Selection (0-{ports.Length-1}) or Q to Quit : ");
                 string sel = (Console.ReadLine() ?? string.Empty).ToUpper();
                 if (sel.StartsWith('Q'))
                     return;
-                if (sel.StartsWith("COM"))
-                    sel = sel[3..];
                 if (!int.TryParse(sel, out int comNumber))
                     continue;
                 try
                 {
-                    com = new($"COM{comNumber}", 115200, Parity.None, 8, StopBits.One)
+                    com = new($"{ports[comNumber]}", 115200, Parity.None, 8, StopBits.One)
                     {
                         ReadTimeout = 100000000
                     };
                     com.Open();
                 }
-                catch 
+                catch  
                 {
-                    Console.Write($"Cannot open COM{comNumber}");
+                    Console.Write($"Cannot open {ports[comNumber]}");
                     com?.Dispose();
                     continue;
                 }
-                Console.WriteLine($"Listening on COM{comNumber}");
+                Console.WriteLine($"Listening on {ports[comNumber]}");
                 break;
             }
             using (com)
