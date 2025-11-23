@@ -105,6 +105,7 @@ namespace Dump950
                         {
                             Console.WriteLine("Unable to write 'dump.bin', file system error");
                         }
+                        Console.ReadLine();
                         return;
                     }
                 }
